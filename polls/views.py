@@ -6,6 +6,9 @@ from django.utils import timezone
 from .models import Choice, Question
 from django.views.decorators.csrf import csrf_exempt #FLAW 2 (2/2)
 
+
+
+
 class IndexView(generic.ListView):
     template_name = 'polls/index.html'
     context_object_name = 'latest_question_list'
@@ -81,4 +84,18 @@ def vote(request, question_id):
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
         return HttpResponseRedirect(reverse('polls:results', args=(question.id,)))
-    
+
+
+##### LISÄYS: SIGN UP OMINAISUUS ####
+
+from django.contrib.auth.forms import UserCreationForm    
+
+def signup(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()   
+            return HttpResponseRedirect(reverse('polls:index')) 
+    else:
+        form = UserCreationForm()
+    return render(request, 'polls/signup.html', {'form': form})
